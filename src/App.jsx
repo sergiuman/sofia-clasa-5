@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import SubjectCard from './components/SubjectCard';
 import SubjectDetailModal from './components/SubjectDetailModal';
@@ -7,20 +7,49 @@ import QuizArenaView from './components/QuizArenaView';
 import FlashcardsView from './components/FlashcardsView';
 import AudioStudioView from './components/AudioStudioView';
 import ProgressView from './components/ProgressView';
-import { SUBJECTS } from './data/subjectsData';
+import { SUBJECTS, BADGES } from './data/subjectsData';
 import './styles/main.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('subjects');
-  const [subjectsData, setSubjectsData] = useState(SUBJECTS);
+  const [subjectsData, setSubjectsData] = useState(() => {
+    const saved = localStorage.getItem('sofia_subjects_data');
+    return saved ? JSON.parse(saved) : SUBJECTS;
+  });
+  
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [quizSubjectId, setQuizSubjectId] = useState('biologie');
-  const [totalXp, setTotalXp] = useState(650);
+  
+  const [totalXp, setTotalXp] = useState(() => {
+    const saved = localStorage.getItem('sofia_total_xp');
+    return saved ? parseInt(saved, 10) : 0;
+  });
 
   const userLevel = Math.floor(totalXp / 300) + 1;
 
-  const handleAddXp = (amount) => {
+  useEffect(() => {
+    localStorage.setItem('sofia_total_xp', totalXp.toString());
+  }, [totalXp]);
+
+  useEffect(() => {
+    localStorage.setItem('sofia_subjects_data', JSON.stringify(subjectsData));
+  }, [subjectsData]);
+
+  const handleAddXp = (amount, subjectId) => {
     setTotalXp((prev) => prev + amount);
+
+    // Automatically increase subject progress on quiz completion
+    if (subjectId) {
+      setSubjectsData((prevSubjects) =>
+        prevSubjects.map((sub) => {
+          if (sub.id === subjectId) {
+            const newProgress = Math.min(100, sub.progress + 15);
+            return { ...sub, progress: newProgress };
+          }
+          return sub;
+        })
+      );
+    }
   };
 
   const handleLaunchQuiz = (subjectId) => {
@@ -66,7 +95,7 @@ export default function App() {
         {activeTab === 'quizzes' && (
           <QuizArenaView
             subjects={subjectsData}
-            onAddXp={handleAddXp}
+            onAddXp={(xp) => handleAddXp(xp, quizSubjectId)}
             initialSubjectId={quizSubjectId}
           />
         )}

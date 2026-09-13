@@ -9,8 +9,8 @@ export const SUBJECTS = [
     themeColor: "#10b981",
     manualName: "Biologie 5.pdf",
     description: "Descooperă lumea viului, microscopul, celula, plantele, animalele și mediile de viață.",
-    progress: 45,
-    xp: 320,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "bio-u1",
@@ -102,8 +102,8 @@ export const SUBJECTS = [
     themeColor: "#3b82f6",
     manualName: "Matematica 5.pdf",
     description: "Operații cu numere naturale, fracții ordinare și zecimale, geometrie și unități de măsură.",
-    progress: 55,
-    xp: 450,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "mat-u1",
@@ -218,8 +218,8 @@ export const SUBJECTS = [
     themeColor: "#f43f5e",
     manualName: "Romana 5.pdf",
     description: "Lectură, texte literare și nonliterare, gramatică (substantiv, adjectiv, verb) și comunicare.",
-    progress: 65,
-    xp: 510,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "rom-u1",
@@ -330,8 +330,8 @@ export const SUBJECTS = [
     themeColor: "#d97706",
     manualName: "Istorie 5.pdf",
     description: "Călătorie de la Preistorie, Orientul Antic, Grecia, Roma Antică până la Geto-Daci.",
-    progress: 40,
-    xp: 310,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "ist-u1",
@@ -420,8 +420,8 @@ export const SUBJECTS = [
     themeColor: "#0284c7",
     manualName: "Geografie 5.pdf",
     description: "Pământul în Univers, Harta, Continentele, Relief, Climă și Apele terestre.",
-    progress: 50,
-    xp: 380,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "geo-u1",
@@ -494,8 +494,8 @@ export const SUBJECTS = [
     themeColor: "#9333ea",
     manualName: "Informatica 5.pdf",
     description: "Componentele calculatorului, editare de text, algoritmi și creare de jocuri în Scratch.",
-    progress: 75,
-    xp: 580,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "inf-u1",
@@ -561,7 +561,7 @@ export const SUBJECTS = [
       { front: "Regula de aur pentru siguranța pe Internet:", back: "Nu oferi niciodată parola, numele complet, adresa sau școala persoanelor străine online!" }
     ],
     audioPrompts: [
-      "Ghid Audio Scratch: Cum programezi o pisică să sară peste obstacole.",
+      "Ghid Audio Scratch: Cum programezi o pisică să sară peste obstacoles.",
       "Podcast Tehnologie: Istoria calculatoarelor de la primele mașini uriașe la tablete."
     ]
   },
@@ -573,8 +573,8 @@ export const SUBJECTS = [
     themeColor: "#0891b2",
     manualName: "Educatie Tehnologica 5.pdf",
     description: "Materiale, tehnologii curate, alimentație sănătoasă și ecosisteme casnice.",
-    progress: 35,
-    xp: 240,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "teh-u1",
@@ -636,8 +636,8 @@ export const SUBJECTS = [
     themeColor: "#d946ef",
     manualName: "Educatie Plastica 5.pdf",
     description: "Limbajul vizual, culori primare, secundare, calde, reci și compoziții artistice.",
-    progress: 45,
-    xp: 290,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "pla-u1",
@@ -700,8 +700,8 @@ export const SUBJECTS = [
     themeColor: "#8b5cf6",
     manualName: "Educatie Muzicala 5.pdf",
     description: "Notarea muzicală, portativul, cheia Sol, ritmul și auditive muzicale.",
-    progress: 40,
-    xp: 260,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "muz-u1",
@@ -756,8 +756,8 @@ export const SUBJECTS = [
     themeColor: "#14b8a6",
     manualName: "Consiliere 5.pdf",
     description: "Managementul învățării, autocunoaștere, stăpânirea emoțiilor și relații de prietenie.",
-    progress: 60,
-    xp: 340,
+    progress: 0,
+    xp: 0,
     units: [
       {
         id: "con-u1",
@@ -824,12 +824,12 @@ export const SUBJECTS = [
 ];
 
 export const BADGES = [
-  { id: "b1", title: "Începător Curios", icon: "🌱", description: "Ai explorat prima materie din hub!", unlocked: true },
-  { id: "b2", title: "Maestru al Fracțiilor", icon: "📐", description: "Scor maxim la testul de Matematică!", unlocked: true },
-  { id: "b3", title: "Cercetător Biolog", icon: "🧬", description: "Ai parcurs celula și regnul plantelor!", unlocked: true },
-  { id: "b4", title: "Explorator Istoric", icon: "🏛️", description: "Ai călătorit prin Egiptul și Grecia Antică!", unlocked: true },
-  { id: "b5", title: "Coder Scratch", icon: "💻", description: "Ai creat primul tău algoritm în Informatică!", unlocked: true },
-  { id: "b6", title: "Campioana Lecturii", icon: "📖", description: "Ai finalizat 5 teste de Limba Română!", unlocked: true },
-  { id: "b7", title: "Geograf Amator", icon: "🌍", description: "Cunoști continentele și Pământul!", unlocked: true },
-  { id: "b8", title: "Geniu Multidisciplinar", icon: "🌟", description: "Ai parcurs peste 50% din programa clasei a V-a!", unlocked: true }
+  { id: "b1", title: "Începător Curios", icon: "🌱", description: "Explorează prima materie din hub!", unlocked: false },
+  { id: "b2", title: "Maestru al Fracțiilor", icon: "📐", description: "Scor maxim la testul de Matematică!", unlocked: false },
+  { id: "b3", title: "Cercetător Biolog", icon: "🧬", description: "Parcurge celula și regnul plantelor!", unlocked: false },
+  { id: "b4", title: "Explorator Istoric", icon: "🏛️", description: "Călătorește prin Egiptul și Grecia Antică!", unlocked: false },
+  { id: "b5", title: "Coder Scratch", icon: "💻", description: "Creează primul tău algoritm în Informatică!", unlocked: false },
+  { id: "b6", title: "Campioana Lecturii", icon: "📖", description: "Finalizează 5 teste de Limba Română!", unlocked: false },
+  { id: "b7", title: "Geograf Amator", icon: "🌍", description: "Descooperă continentele și Pământul!", unlocked: false },
+  { id: "b8", title: "Geniu Multidisciplinar", icon: "🌟", description: "Parcurge peste 50% din programa clasei a V-a!", unlocked: false }
 ];
