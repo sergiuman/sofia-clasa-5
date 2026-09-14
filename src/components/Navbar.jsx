@@ -1,54 +1,58 @@
 import React from 'react';
-import { BookOpen, Bot, Award, Zap, Volume2, Sparkles } from 'lucide-react';
+import { BookOpen, Bot, Zap, Volume2, Award, Sparkles } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel }) {
   const tabs = [
-    { id: 'subjects', label: 'Materiile Sofiei', icon: BookOpen },
-    { id: 'tutor', label: 'Tutorul AI Sofia', icon: Bot },
-    { id: 'quizzes', label: 'Quiz & Practică', icon: Zap },
-    { id: 'flashcards', label: 'Flashcards Audio', icon: Volume2 },
-    { id: 'audiostudio', label: 'NotebookLM & ElevenLabs', icon: Sparkles },
-    { id: 'progress', label: 'Progres & Medalii', icon: Award }
+    { id: 'subjects', label: 'Materii', icon: BookOpen },
+    { id: 'tutor', label: 'Tutor AI', icon: Bot },
+    { id: 'quizzes', label: 'Quiz', icon: Zap },
+    { id: 'flashcards', label: 'Flashcards', icon: Volume2 },
+    { id: 'progress', label: 'Progres', icon: Award }
   ];
 
   return (
-    <header className="header-wrapper">
-      <div className="header">
-        <div className="brand-section">
-          <div className="avatar-badge">🌟</div>
+    <>
+      {/* Mobile Top App Bar */}
+      <header className="mobile-top-bar">
+        <div className="mobile-brand">
+          <div className="mobile-avatar">🌟</div>
           <div>
-            <h1 className="brand-title">Sofia Learning Hub</h1>
-            <p className="brand-subtitle">Platforma Ta Interactivă pentru Clasa a V-a</p>
+            <h1 className="mobile-app-title">Sofia Hub</h1>
+            <p className="mobile-app-subtitle">Clasa a V-a</p>
           </div>
         </div>
 
-        <div className="stats-summary">
-          <div className="stat-chip">
-            <span>⚡ Level</span>
-            <span className="value">{userLevel}</span>
+        <div className="mobile-stats-row">
+          <div className="mobile-stat-badge level">
+            <span>⚡ Lvl</span>
+            <strong>{userLevel}</strong>
           </div>
-          <div className="stat-chip">
+          <div className="mobile-stat-badge xp">
             <span>🏆 XP</span>
-            <span className="value">{totalXp}</span>
+            <strong>{totalXp}</strong>
           </div>
         </div>
-      </div>
+      </header>
 
-      <nav className="nav-tabs">
+      {/* Mobile Bottom Tab Bar */}
+      <nav className="mobile-bottom-nav">
         {tabs.map((tab) => {
           const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
-              className={`nav-tab ${activeTab === tab.id ? 'active' : ''}`}
+              className={`mobile-tab-item ${isActive ? 'active' : ''}`}
               onClick={() => setActiveTab(tab.id)}
             >
-              <Icon size={18} />
-              {tab.label}
+              <div className="tab-icon-wrapper">
+                <Icon size={20} />
+              </div>
+              <span className="tab-label">{tab.label}</span>
             </button>
           );
         })}
       </nav>
-    </header>
+    </>
   );
 }

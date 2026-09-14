@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { Zap, CheckCircle2, XCircle, RotateCcw, Award, ArrowRight } from 'lucide-react';
+import { Zap, CheckCircle2, XCircle, RotateCcw, ArrowRight } from 'lucide-react';
 
 export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
   const [selectedSubjectId, setSelectedSubjectId] = useState(initialSubjectId || subjects[0].id);
@@ -26,8 +26,8 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
       setScore((prev) => prev + 1);
       onAddXp(20);
       confetti({
-        particleCount: 50,
-        spread: 60,
+        particleCount: 40,
+        spread: 50,
         origin: { y: 0.7 }
       });
     }
@@ -42,8 +42,8 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
       setQuizFinished(true);
       if (score + 1 === activeSubject.quizzes.length) {
         confetti({
-          particleCount: 150,
-          spread: 100,
+          particleCount: 120,
+          spread: 80,
           origin: { y: 0.5 }
         });
       }
@@ -59,40 +59,46 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
   };
 
   return (
-    <div style={{ maxWidth: '780px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
+    <div>
+      {/* Mobile Horizontal Subject Selector */}
+      <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.85rem', marginBottom: '1rem', WebkitOverflowScrolling: 'touch' }}>
         {subjects.map((sub) => (
           <button
             key={sub.id}
-            className={`nav-tab ${selectedSubjectId === sub.id ? 'active' : ''}`}
+            className="mobile-preset-pill"
+            style={{
+              background: selectedSubjectId === sub.id ? 'linear-gradient(135deg, #a855f7, #6366f1)' : 'rgba(255,255,255,0.06)',
+              borderColor: selectedSubjectId === sub.id ? '#c084fc' : 'rgba(255,255,255,0.1)',
+              color: '#fff',
+              fontWeight: selectedSubjectId === sub.id ? 700 : 500
+            }}
             onClick={() => {
               setSelectedSubjectId(sub.id);
               handleRestartQuiz();
             }}
           >
-            <span>{sub.icon}</span>
-            {sub.title}
+            <span>{sub.icon}</span> {sub.title}
           </button>
         ))}
       </div>
 
-      <div className="quiz-card">
+      <div className="mobile-quiz-card">
         {!quizFinished ? (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>
-                Întrebarea {currentQuizIndex + 1} din {activeSubject.quizzes.length}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 600 }}>
+                Întrebarea {currentQuizIndex + 1} / {activeSubject.quizzes.length}
               </span>
-              <span style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c084fc', padding: '0.3rem 0.8rem', borderRadius: '12px', fontWeight: 700, fontSize: '0.85rem' }}>
-                +20 XP per Răspuns Corect
+              <span style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#c084fc', padding: '0.2rem 0.6rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.75rem' }}>
+                +20 XP
               </span>
             </div>
 
-            <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', marginBottom: '1.5rem', lineHeight: '1.4' }}>
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', color: '#fff', marginBottom: '1.15rem', lineHeight: '1.35' }}>
               {currentQuiz.question}
             </h3>
 
-            <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ marginBottom: '1.25rem' }}>
               {currentQuiz.options.map((option, idx) => {
                 let statusClass = '';
                 if (selectedOption === idx) statusClass = 'selected';
@@ -104,48 +110,46 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
                 return (
                   <div
                     key={idx}
-                    className={`quiz-option ${statusClass}`}
+                    className={`mobile-quiz-option ${statusClass}`}
                     onClick={() => handleSelectOption(idx)}
                   >
-                    <span style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>
+                    <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', flexShrink: 0 }}>
                       {String.fromCharCode(65 + idx)}
                     </span>
-                    <span style={{ flex: 1 }}>{option}</span>
-                    {isAnswerSubmitted && idx === currentQuiz.correct && <CheckCircle2 size={20} color="#10b981" />}
-                    {isAnswerSubmitted && selectedOption === idx && idx !== currentQuiz.correct && <XCircle size={20} color="#ef4444" />}
+                    <span style={{ flex: 1, color: '#fff' }}>{option}</span>
+                    {isAnswerSubmitted && idx === currentQuiz.correct && <CheckCircle2 size={18} color="#10b981" />}
+                    {isAnswerSubmitted && selectedOption === idx && idx !== currentQuiz.correct && <XCircle size={18} color="#ef4444" />}
                   </div>
                 );
               })}
             </div>
 
             {isAnswerSubmitted && (
-              <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '1rem 1.25rem', borderRadius: '14px', marginBottom: '1.5rem' }}>
-                <h4 style={{ color: '#cbd5e1', marginBottom: '0.3rem', fontSize: '0.9rem' }}>💡 Explicația Lecției:</h4>
-                <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{currentQuiz.explanation}</p>
+              <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '0.85rem 1rem', borderRadius: '14px', marginBottom: '1.15rem' }}>
+                <h4 style={{ color: '#cbd5e1', marginBottom: '0.2rem', fontSize: '0.8rem' }}>💡 Explicație:</h4>
+                <p style={{ color: '#94a3b8', fontSize: '0.8rem', lineHeight: '1.35' }}>{currentQuiz.explanation}</p>
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {!isAnswerSubmitted ? (
-                <button className="send-btn" onClick={handleSubmitAnswer} disabled={selectedOption === null} style={{ opacity: selectedOption === null ? 0.5 : 1 }}>
-                  Verifică Răspunsul
-                </button>
-              ) : (
-                <button className="send-btn" onClick={handleNextQuestion}>
-                  Următoarea Întrebare <ArrowRight size={18} />
-                </button>
-              )}
-            </div>
+            {!isAnswerSubmitted ? (
+              <button className="mobile-action-btn" onClick={handleSubmitAnswer} disabled={selectedOption === null} style={{ opacity: selectedOption === null ? 0.5 : 1 }}>
+                Verifică Răspunsul
+              </button>
+            ) : (
+              <button className="mobile-action-btn" onClick={handleNextQuestion}>
+                Următoarea Întrebare <ArrowRight size={18} />
+              </button>
+            )}
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🏆</div>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', marginBottom: '0.5rem' }}>Ai Finalizat Quiz-ul!</h2>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '1.1rem' }}>
-              Ai obținut <strong>{score}</strong> din <strong>{activeSubject.quizzes.length}</strong> răspunsuri corecte la materia {activeSubject.title}!
+          <div style={{ textAlign: 'center', padding: '1.5rem 0.5rem' }}>
+            <div style={{ fontSize: '3.5rem', marginBottom: '0.75rem' }}>🏆</div>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', color: '#fff', marginBottom: '0.4rem' }}>Bravo Sofia!</h2>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1.25rem', fontSize: '0.95rem' }}>
+              Ai obținut <strong>{score}</strong> din <strong>{activeSubject.quizzes.length}</strong> răspunsuri corecte!
             </p>
 
-            <button className="send-btn" style={{ margin: '0 auto' }} onClick={handleRestartQuiz}>
+            <button className="mobile-action-btn" onClick={handleRestartQuiz}>
               <RotateCcw size={18} /> Încearcă Din Nou
             </button>
           </div>

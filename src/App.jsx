@@ -38,7 +38,6 @@ export default function App() {
   const handleAddXp = (amount, subjectId) => {
     setTotalXp((prev) => prev + amount);
 
-    // Automatically increase subject progress on quiz completion
     if (subjectId) {
       setSubjectsData((prevSubjects) =>
         prevSubjects.map((sub) => {
@@ -69,16 +68,16 @@ export default function App() {
       <main>
         {activeTab === 'subjects' && (
           <div>
-            <div style={{ marginBottom: '2rem' }}>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', marginBottom: '0.4rem' }}>
-                Manualele Sofiei (Clasa a V-a) 📚
+            <div style={{ marginBottom: '1.25rem' }}>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: '#fff', marginBottom: '0.2rem' }}>
+                Manualele Tale 📚
               </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>
-                Alege o materie pentru a explora capitolele din manual, quiz-urile și fișele de studiu.
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                Alege o materie pentru capitole, quiz-uri și fișe.
               </p>
             </div>
 
-            <div className="subjects-grid">
+            <div className="mobile-subjects-grid">
               {subjectsData.map((sub) => (
                 <SubjectCard
                   key={sub.id}
@@ -101,8 +100,6 @@ export default function App() {
         )}
 
         {activeTab === 'flashcards' && <FlashcardsView subjects={subjectsData} />}
-
-        {activeTab === 'audiostudio' && <AudioStudioView subjects={subjectsData} />}
 
         {activeTab === 'progress' && (
           <ProgressView
