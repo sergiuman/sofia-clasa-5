@@ -5,49 +5,58 @@ import SubjectDetailModal from './components/SubjectDetailModal';
 import AITutorView from './components/AITutorView';
 import QuizArenaView from './components/QuizArenaView';
 import FlashcardsView from './components/FlashcardsView';
-import AudioStudioView from './components/AudioStudioView';
 import ProgressView from './components/ProgressView';
 import { SUBJECTS, BADGES } from './data/subjectsData';
 import './styles/main.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('subjects');
-  const [subjectsData, setSubjectsData] = useState(() => {
-    const saved = localStorage.getItem('sofia_subjects_data');
-    return saved ? JSON.parse(saved) : SUBJECTS;
-  });
   
-  const [selectedSubject, setSelectedSubject] = useState(null);
-  const [quizSubjectId, setQuizSubjectId] = useState('biologie');
-  
-  const [totalXp, setTotalXp] = useState(() => {
-    const saved = localStorage.getItem('sofia_total_xp');
-    return saved ? parseInt(saved, 10) : 0;
+  // Track answered quiz IDs per subject
+  const [answeredQuestionIds, setAnsweredQuestionIds] = useState(() => {
+    const saved = localStorage.getItem('sofia_answered_questions');
+    return saved ? JSON.parse(saved) : [];
   });
 
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [quizSubjectId, setQuizSubjectId] = useState('geografie');
+
+  useEffect(() => {
+    localStorage.setItem('sofia_answered_questions', JSON.stringify(answeredQuestionIds));
+  }, [answeredQuestionIds]);
+
+  // Calculate dynamic progress for each subject
+  const subjectsData = SUBJECTS.map((sub) => {
+    const totalQuestions = sub.quizzes.length;
+    if (totalQuestions === 0) return { ...sub, progress: 0 };
+
+    const correctForSub = sub.quizzes.filter((q) => answeredQuestionIds.includes(q.id)).length;
+    const progressPercent = Math.min(100, Math.round((correctForSub / totalQuestions) * 100));
+
+    return { ...sub, progress: progressPercent };
+  });
+
+  // Calculate total XP and Level
+  const totalXp = answeredQuestionIds.length * 20;
   const userLevel = Math.floor(totalXp / 300) + 1;
 
-  useEffect(() => {
-    localStorage.setItem('sofia_total_xp', totalXp.toString());
-  }, [totalXp]);
+  // Calculate badges unlocked based on real progress
+  const badgesData = BADGES.map((b) => {
+    let unlocked = false;
+    if (b.id === 'b1' && answeredQuestionIds.length >= 1) unlocked = true;
+    if (b.id === 'b2' && (subjectsData.find((s) => s.id === 'geografie')?.progress || 0) >= 80) unlocked = true;
+    if (b.id === 'b3' && (subjectsData.find((s) => s.id === 'biologie')?.progress || 0) >= 80) unlocked = true;
+    if (b.id === 'b4' && (subjectsData.find((s) => s.id === 'matematica')?.progress || 0) >= 80) unlocked = true;
+    if (b.id === 'b5' && (subjectsData.find((s) => s.id === 'romana')?.progress || 0) >= 80) unlocked = true;
+    if (b.id === 'b6' && (subjectsData.find((s) => s.id === 'istorie')?.progress || 0) >= 80) unlocked = true;
+    if (b.id === 'b7' && (subjectsData.find((s) => s.id === 'informatica')?.progress || 0) >= 80) unlocked = true;
+    if (b.id === 'b8' && totalXp >= 300) unlocked = true;
+    return { ...b, unlocked };
+  });
 
-  useEffect(() => {
-    localStorage.setItem('sofia_subjects_data', JSON.stringify(subjectsData));
-  }, [subjectsData]);
-
-  const handleAddXp = (amount, subjectId) => {
-    setTotalXp((prev) => prev + amount);
-
-    if (subjectId) {
-      setSubjectsData((prevSubjects) =>
-        prevSubjects.map((sub) => {
-          if (sub.id === subjectId) {
-            const newProgress = Math.min(100, sub.progress + 15);
-            return { ...sub, progress: newProgress };
-          }
-          return sub;
-        })
-      );
+  const handleCorrectAnswer = (questionId) => {
+    if (!answeredQuestionIds.includes(questionId)) {
+      setAnsweredQuestionIds((prev) => [...prev, questionId]);
     }
   };
 
@@ -68,12 +77,12 @@ export default function App() {
       <main>
         {activeTab === 'subjects' && (
           <div>
-            <div style={{ marginBottom: '1.25rem' }}>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: '#fff', marginBottom: '0.2rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
+              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', color: '#fff', marginBottom: '0.15rem' }}>
                 Manualele Tale 📚
               </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                Alege o materie pentru capitole, quiz-uri și fișe.
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                Alege o materie pentru lectii, quiz-uri și fișe.
               </p>
             </div>
 
@@ -94,7 +103,7 @@ export default function App() {
         {activeTab === 'quizzes' && (
           <QuizArenaView
             subjects={subjectsData}
-            onAddXp={(xp) => handleAddXp(xp, quizSubjectId)}
+            onCorrectAnswer={handleCorrectAnswer}
             initialSubjectId={quizSubjectId}
           />
         )}
@@ -104,6 +113,7 @@ export default function App() {
         {activeTab === 'progress' && (
           <ProgressView
             subjects={subjectsData}
+            badges={badgesData}
             totalXp={totalXp}
             userLevel={userLevel}
           />

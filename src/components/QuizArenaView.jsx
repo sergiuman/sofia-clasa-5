@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Zap, CheckCircle2, XCircle, RotateCcw, ArrowRight, ChevronDown } from 'lucide-react';
 
-export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
+export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjectId }) {
   const [selectedSubjectId, setSelectedSubjectId] = useState(initialSubjectId || subjects[0].id);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -24,7 +24,7 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
 
     if (selectedOption === currentQuiz.correct) {
       setScore((prev) => prev + 1);
-      onAddXp(20);
+      onCorrectAnswer(currentQuiz.id);
       confetti({
         particleCount: 40,
         spread: 50,
@@ -63,7 +63,7 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
       <div className="mobile-quiz-card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         {!quizFinished ? (
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-            {/* Top Bar: Subject Selector + Question Counter */}
+            {/* Top Bar: Subject Selector Dropdown + Question Counter */}
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
                 <div style={{ position: 'relative' }}>
@@ -88,7 +88,7 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
                   >
                     {subjects.map((sub) => (
                       <option key={sub.id} value={sub.id} style={{ background: '#161e2e', color: '#fff' }}>
-                        {sub.icon} {sub.title}
+                        {sub.icon} {sub.title} ({sub.quizzes.length} intrebări)
                       </option>
                     ))}
                   </select>
@@ -105,7 +105,7 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
                 {currentQuiz.question}
               </h3>
 
-              {/* Options Grid */}
+              {/* Options List */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                 {currentQuiz.options.map((option, idx) => {
                   let statusClass = '';
@@ -122,7 +122,7 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
                       style={{ padding: '0.6rem 0.75rem', marginBottom: 0, fontSize: '0.85rem' }}
                       onClick={() => handleSelectOption(idx)}
                     >
-                      <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', fontSize: '0.7rem', flexShrink: 0 }}>
+                      <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', flexShrink: 0 }}>
                         {String.fromCharCode(65 + idx)}
                       </span>
                       <span style={{ flex: 1, color: '#fff', lineHeight: '1.2' }}>{option}</span>
@@ -145,7 +145,7 @@ export default function QuizArenaView({ subjects, onAddXp, initialSubjectId }) {
               )}
 
               {!isAnswerSubmitted ? (
-                <button className="mobile-action-btn" style={{ padding: '0.75rem', fontSize: '0.95rem' }} onClick={handleSubmitAnswer} disabled={selectedOption === null} opacity={selectedOption === null ? 0.5 : 1}>
+                <button className="mobile-action-btn" style={{ padding: '0.75rem', fontSize: '0.95rem' }} onClick={handleSubmitAnswer} disabled={selectedOption === null} style={{ opacity: selectedOption === null ? 0.5 : 1 }}>
                   Verifică Răspunsul
                 </button>
               ) : (
