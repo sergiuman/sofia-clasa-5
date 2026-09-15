@@ -4,16 +4,19 @@ import LearningMapView from './components/LearningMapView';
 import LearningOutcomesView from './components/LearningOutcomesView';
 import SubjectCard from './components/SubjectCard';
 import SubjectDetailModal from './components/SubjectDetailModal';
+import GemsShopModal from './components/GemsShopModal';
 import AITutorView from './components/AITutorView';
 import QuizArenaView from './components/QuizArenaView';
 import FlashcardsView from './components/FlashcardsView';
 import ProgressView from './components/ProgressView';
 import { SUBJECTS, BADGES } from './data/subjectsData';
-import { playCorrectSound, playChestSound, playLevelUpSound } from './utils/soundEngine';
+import { playCorrectSound, playChestSound, getSoundMuted, toggleSoundMute } from './utils/soundEngine';
 import './styles/main.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('map');
+  const [isMuted, setIsMuted] = useState(() => getSoundMuted());
+  const [isShopOpen, setIsShopOpen] = useState(false);
   
   const [answeredQuestionIds, setAnsweredQuestionIds] = useState(() => {
     const saved = localStorage.getItem('sofia_answered_questions');
@@ -44,6 +47,15 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('sofia_streak_count', streakCount.toString());
   }, [streakCount]);
+
+  const handleToggleMute = () => {
+    const mutedState = toggleSoundMute();
+    setIsMuted(mutedState);
+  };
+
+  const handleDeductGems = (amount) => {
+    setGemsCount((prev) => Math.max(0, prev - amount));
+  };
 
   // Calculate dynamic progress for each subject
   const subjectsData = SUBJECTS.map((sub) => {
@@ -100,6 +112,9 @@ export default function App() {
         userLevel={userLevel}
         streakCount={streakCount}
         gemsCount={gemsCount}
+        isMuted={isMuted}
+        onToggleMute={handleToggleMute}
+        onOpenShop={() => setIsShopOpen(true)}
       />
 
       <main>
@@ -163,6 +178,14 @@ export default function App() {
         onClose={() => setSelectedSubject(null)}
         onLaunchQuiz={handleLaunchQuiz}
       />
+
+      {isShopOpen && (
+        <GemsShopModal
+          gemsCount={gemsCount}
+          onDeductGems={handleDeductGems}
+          onClose={() => setIsShopOpen(false)}
+        />
+      )}
     </div>
   );
 }

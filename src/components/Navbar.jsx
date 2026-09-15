@@ -1,7 +1,17 @@
 import React from 'react';
-import { Map, Target, Bot, Zap, Volume2, Award, Flame, Gem } from 'lucide-react';
+import { Map, Target, Bot, Zap, Volume2, Award, VolumeX } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel, streakCount = 1, gemsCount = 15 }) {
+export default function Navbar({
+  activeTab,
+  setActiveTab,
+  totalXp,
+  userLevel,
+  streakCount = 1,
+  gemsCount = 15,
+  isMuted,
+  onToggleMute,
+  onOpenShop
+}) {
   const tabs = [
     { id: 'map', label: 'Hartă', icon: Map },
     { id: 'outcomes', label: 'Ce Înveți', icon: Target },
@@ -24,17 +34,33 @@ export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel, st
         </div>
 
         <div className="mobile-stats-row">
-          <div className="mobile-stat-badge streak">
+          <button
+            onClick={onToggleMute}
+            className="mobile-stat-badge"
+            style={{ background: 'rgba(255,255,255,0.06)', cursor: 'pointer' }}
+            title={isMuted ? 'Sunet Oprit' : 'Sunet Pornit'}
+          >
+            {isMuted ? <VolumeX size={14} color="#ef4444" /> : <Volume2 size={14} color="#34d399" />}
+          </button>
+
+          <div className="mobile-stat-badge streak" title="Zile consecutive de învățare">
             <span>🔥</span>
             <strong>{streakCount}d</strong>
           </div>
-          <div className="mobile-stat-badge gems">
+
+          <div
+            className="mobile-stat-badge gems"
+            style={{ cursor: 'pointer' }}
+            onClick={onOpenShop}
+            title="Deschide Magazinul cu Diamente"
+          >
             <span>💎</span>
             <strong style={{ color: '#38bdf8' }}>{gemsCount}</strong>
           </div>
+
           <div className="mobile-stat-badge xp">
             <span>🏆</span>
-            <strong style={{ color: '#fbbf24' }}>{totalXp} XP</strong>
+            <strong style={{ color: '#fbbf24' }}>{totalXp}</strong>
           </div>
         </div>
       </header>

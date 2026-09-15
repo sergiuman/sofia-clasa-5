@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { Zap, CheckCircle2, XCircle, RotateCcw, ArrowRight, ChevronDown } from 'lucide-react';
+import { Zap, CheckCircle2, XCircle, RotateCcw, ArrowRight, ChevronDown, Lightbulb, Flame } from 'lucide-react';
+import { playComboSound } from '../utils/soundEngine';
 
 export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjectId }) {
   const [selectedSubjectId, setSelectedSubjectId] = useState(initialSubjectId || subjects[0].id);
@@ -8,6 +9,8 @@ export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjec
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+  const [comboStreak, setComboStreak] = useState(0);
+  const [showHint, setShowHint] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
 
   const activeSubject = subjects.find((s) => s.id === selectedSubjectId) || subjects[0];
@@ -24,12 +27,21 @@ export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjec
 
     if (selectedOption === currentQuiz.correct) {
       setScore((prev) => prev + 1);
+      const newCombo = comboStreak + 1;
+      setComboStreak(newCombo);
       onCorrectAnswer(currentQuiz.id);
+
+      if (newCombo >= 2) {
+        playComboSound();
+      }
+
       confetti({
-        particleCount: 40,
+        particleCount: newCombo >= 2 ? 60 : 40,
         spread: 50,
         origin: { y: 0.7 }
       });
+    } else {
+      setComboStreak(0);
     }
   };
 
@@ -38,6 +50,7 @@ export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjec
       setCurrentQuizIndex((prev) => prev + 1);
       setSelectedOption(null);
       setIsAnswerSubmitted(false);
+      setShowHint(false);
     } else {
       setQuizFinished(true);
       if (score + 1 === activeSubject.quizzes.length) {
@@ -54,6 +67,8 @@ export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjec
     setCurrentQuizIndex(0);
     setSelectedOption(null);
     setIsAnswerSubmitted(false);
+    setShowHint(false);
+    setComboStreak(0);
     setScore(0);
     setQuizFinished(false);
   };
@@ -63,7 +78,7 @@ export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjec
       <div className="mobile-quiz-card" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         {!quizFinished ? (
           <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-            {/* Top Bar: Subject Selector Dropdown + Question Counter */}
+            {/* Top Bar: Subject Selector Dropdown + Combo & Question Counter */}
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
                 <div style={{ position: 'relative' }}>
@@ -95,15 +110,52 @@ export default function QuizArenaView({ subjects, onCorrectAnswer, initialSubjec
                   <ChevronDown size={14} style={{ position: 'absolute', right: '0.5rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#c084fc' }} />
                 </div>
 
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700 }}>
-                  Întrebarea {currentQuizIndex + 1} / {activeSubject.quizzes.length}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  {comboStreak >= 2 && (
+                    <span style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#f87171', padding: '0.2rem 0.5rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+                      <Flame size={12} fill="#f87171" /> Combo x{comboStreak}!
+                    </span>
+                  )}
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700 }}>
+                    {currentQuizIndex + 1} / {activeSubject.quizzes.length}
+                  </span>
+                </div>
               </div>
 
-              {/* Question Text */}
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', color: '#fff', marginBottom: '0.75rem', lineHeight: '1.3' }}>
-                {currentQuiz.question}
-              </h3>
+              {/* Question Text & Hint Button */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', color: '#fff', lineHeight: '1.3', flex: 1 }}>
+                  {currentQuiz.question}
+                </h3>
+                <button
+                  onClick={() => setShowHint(!showHint)}
+                  style={{
+                    background: showHint ? 'rgba(251, 191, 36, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                    border: '1px solid rgba(251, 191, 36, 0.4)',
+                    color: '#fbbf24',
+                    padding: '0.3rem 0.5rem',
+                    borderRadius: '10px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    flexShrink: 0
+                  }}
+                >
+                  <Lightbulb size={13} /> Indiciu
+                </button>
+              </div>
+
+              {/* Hint Box */}
+              {showHint && (
+                <div style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '0.5rem 0.75rem', borderRadius: '12px', marginBottom: '0.75rem' }}>
+                  <p style={{ color: '#fef08a', fontSize: '0.75rem', lineHeight: '1.25' }}>
+                    💡 <strong>Indiciu:</strong> Gândește-te la ce ai învățat la această temă în manual! {currentQuiz.explanation.slice(0, 45)}...
+                  </p>
+                </div>
+              )}
 
               {/* Options List */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
