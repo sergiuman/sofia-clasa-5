@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import LearningMapView from './components/LearningMapView';
+import LearningOutcomesView from './components/LearningOutcomesView';
 import SubjectCard from './components/SubjectCard';
 import SubjectDetailModal from './components/SubjectDetailModal';
 import AITutorView from './components/AITutorView';
@@ -7,15 +9,25 @@ import QuizArenaView from './components/QuizArenaView';
 import FlashcardsView from './components/FlashcardsView';
 import ProgressView from './components/ProgressView';
 import { SUBJECTS, BADGES } from './data/subjectsData';
+import { playCorrectSound, playChestSound, playLevelUpSound } from './utils/soundEngine';
 import './styles/main.css';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('subjects');
+  const [activeTab, setActiveTab] = useState('map');
   
-  // Track answered quiz IDs per subject
   const [answeredQuestionIds, setAnsweredQuestionIds] = useState(() => {
     const saved = localStorage.getItem('sofia_answered_questions');
     return saved ? JSON.parse(saved) : [];
+  });
+
+  const [gemsCount, setGemsCount] = useState(() => {
+    const saved = localStorage.getItem('sofia_gems_count');
+    return saved ? parseInt(saved, 10) : 15;
+  });
+
+  const [streakCount, setStreakCount] = useState(() => {
+    const saved = localStorage.getItem('sofia_streak_count');
+    return saved ? parseInt(saved, 10) : 1;
   });
 
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -24,6 +36,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('sofia_answered_questions', JSON.stringify(answeredQuestionIds));
   }, [answeredQuestionIds]);
+
+  useEffect(() => {
+    localStorage.setItem('sofia_gems_count', gemsCount.toString());
+  }, [gemsCount]);
+
+  useEffect(() => {
+    localStorage.setItem('sofia_streak_count', streakCount.toString());
+  }, [streakCount]);
 
   // Calculate dynamic progress for each subject
   const subjectsData = SUBJECTS.map((sub) => {
@@ -57,7 +77,13 @@ export default function App() {
   const handleCorrectAnswer = (questionId) => {
     if (!answeredQuestionIds.includes(questionId)) {
       setAnsweredQuestionIds((prev) => [...prev, questionId]);
+      playCorrectSound();
     }
+  };
+
+  const handleOpenChest = (bonusXp, bonusGems) => {
+    setGemsCount((prev) => prev + bonusGems);
+    playChestSound();
   };
 
   const handleLaunchQuiz = (subjectId) => {
@@ -72,9 +98,21 @@ export default function App() {
         setActiveTab={setActiveTab}
         totalXp={totalXp}
         userLevel={userLevel}
+        streakCount={streakCount}
+        gemsCount={gemsCount}
       />
 
       <main>
+        {activeTab === 'map' && (
+          <LearningMapView
+            subjects={subjectsData}
+            onLaunchQuiz={handleLaunchQuiz}
+            onOpenChest={handleOpenChest}
+          />
+        )}
+
+        {activeTab === 'outcomes' && <LearningOutcomesView />}
+
         {activeTab === 'subjects' && (
           <div>
             <div style={{ marginBottom: '1rem' }}>
@@ -82,7 +120,7 @@ export default function App() {
                 Manualele Tale 📚
               </h2>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                Alege o materie pentru lectii, quiz-uri și fișe.
+                Alege o materie pentru lecții, quiz-uri și fișe.
               </p>
             </div>
 

@@ -1,9 +1,10 @@
 import React from 'react';
-import { BookOpen, Bot, Zap, Volume2, Award, Sparkles } from 'lucide-react';
+import { Map, Target, Bot, Zap, Volume2, Award, Flame, Gem } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel }) {
+export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel, streakCount = 1, gemsCount = 15 }) {
   const tabs = [
-    { id: 'subjects', label: 'Materii', icon: BookOpen },
+    { id: 'map', label: 'Hartă', icon: Map },
+    { id: 'outcomes', label: 'Ce Înveți', icon: Target },
     { id: 'tutor', label: 'Tutor AI', icon: Bot },
     { id: 'quizzes', label: 'Quiz', icon: Zap },
     { id: 'flashcards', label: 'Flashcards', icon: Volume2 },
@@ -23,19 +24,23 @@ export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel }) 
         </div>
 
         <div className="mobile-stats-row">
-          <div className="mobile-stat-badge level">
-            <span>⚡ Lvl</span>
-            <strong>{userLevel}</strong>
+          <div className="mobile-stat-badge streak">
+            <span>🔥</span>
+            <strong>{streakCount}d</strong>
+          </div>
+          <div className="mobile-stat-badge gems">
+            <span>💎</span>
+            <strong style={{ color: '#38bdf8' }}>{gemsCount}</strong>
           </div>
           <div className="mobile-stat-badge xp">
-            <span>🏆 XP</span>
-            <strong>{totalXp}</strong>
+            <span>🏆</span>
+            <strong style={{ color: '#fbbf24' }}>{totalXp} XP</strong>
           </div>
         </div>
       </header>
 
       {/* Mobile Bottom Tab Bar */}
-      <nav className="mobile-bottom-nav">
+      <nav className="mobile-bottom-nav" style={{ gridTemplateColumns: 'repeat(6, 1fr)' }}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -46,9 +51,9 @@ export default function Navbar({ activeTab, setActiveTab, totalXp, userLevel }) 
               onClick={() => setActiveTab(tab.id)}
             >
               <div className="tab-icon-wrapper">
-                <Icon size={20} />
+                <Icon size={18} />
               </div>
-              <span className="tab-label">{tab.label}</span>
+              <span className="tab-label" style={{ fontSize: '0.65rem' }}>{tab.label}</span>
             </button>
           );
         })}

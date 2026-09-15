@@ -48,7 +48,7 @@ body {
 
 /* Mobile App Shell Container */
 .app-container {
-  max-width: 600px; /* Mobile App Frame Centering on Desktop, Full Bleed on Mobile */
+  max-width: 600px;
   margin: 0 auto;
   padding: calc(70px + var(--safe-top)) 1rem calc(80px + var(--safe-bottom)) 1rem;
   min-height: 100vh;
@@ -70,8 +70,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   z-index: 100;
   max-width: 600px;
   margin: 0 auto;
@@ -80,57 +80,49 @@ body {
 .mobile-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .mobile-avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 12px;
   background: linear-gradient(135deg, #a855f7, #ec4899);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
 }
 
 .mobile-app-title {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #fff;
   line-height: 1.1;
 }
 
 .mobile-app-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   font-weight: 500;
 }
 
 .mobile-stats-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .mobile-stat-badge {
   background: rgba(30, 41, 59, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.35rem 0.65rem;
-  border-radius: 12px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 10px;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.8rem;
-}
-
-.mobile-stat-badge span {
-  color: var(--text-muted);
-}
-
-.mobile-stat-badge strong {
-  color: #fbbf24;
+  gap: 0.25rem;
+  font-size: 0.75rem;
 }
 
 /* Fixed Bottom Mobile Navigation Bar */
@@ -141,12 +133,11 @@ body {
   right: 0;
   height: calc(64px + var(--safe-bottom));
   padding-bottom: var(--safe-bottom);
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
   align-items: center;
   z-index: 100;
   max-width: 600px;
@@ -161,7 +152,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   height: 100%;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -179,7 +170,6 @@ body {
 }
 
 .tab-label {
-  font-size: 0.7rem;
   font-family: var(--font-heading);
   font-weight: 600;
 }
@@ -191,6 +181,13 @@ body {
 .mobile-tab-item.active .tab-icon-wrapper {
   transform: translateY(-2px);
   color: #c084fc;
+}
+
+/* Learning Map Node Pulse Ring */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 0.3; }
+  100% { transform: scale(0.95); opacity: 0.8; }
 }
 
 /* Mobile Subjects Grid */
@@ -257,7 +254,6 @@ body {
   line-height: 1.25;
 }
 
-/* Mobile Progress Ring / Bar */
 .mobile-progress-bar-bg {
   background: rgba(15, 23, 42, 0.8);
   height: 6px;
